@@ -1,12 +1,15 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script
             src="https://code.jquery.com/jquery-3.4.1.js"
             integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
             crossorigin="anonymous"></script>
-    <title>Title</title>
+    <title>Document</title>
     <script>
         function sendFile() {
             // данные для отправки
@@ -35,15 +38,13 @@
     </script>
 </head>
 <body>
-<form action="/files" method="post" enctype="multipart/form-data">
 <div>
-    <input type="file" id="file" name="file" placeholder="FileName..."/>
+    <input type="file" id="file" name="file" placeholder="Имя файла..."/>
     <button onclick="sendFile()">
-        Upload file
+        Загрузить файл
     </button>
     <input type="hidden" id="file_hidden">
     <div class="filename"></div>
 </div>
-</form>
 </body>
 </html>

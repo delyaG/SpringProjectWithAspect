@@ -33,13 +33,12 @@ public class FilesController {
     public ResponseEntity uploadFile(@RequestParam("file") MultipartFile multipartFile, HttpServletRequest req) {
         Long userId = (Long) req.getSession().getAttribute("auth");
 
-        if (userId != null) {
-            FileInfo file = fileService.save(multipartFile, userId);
-            System.out.println("2");
-            return ResponseEntity.ok().body(file.getStorageFileName());
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(userId);
         }
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(userId);
+        FileInfo file = fileService.save(multipartFile, userId);
+        return ResponseEntity.ok().body("saved " + file.getStorageFileName());
     }
 
     @RequestMapping(value ="/files/{file-name:.+}" , method = RequestMethod.GET)

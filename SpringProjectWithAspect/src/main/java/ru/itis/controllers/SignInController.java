@@ -30,9 +30,7 @@ public class SignInController {
     private void signIn(HttpServletResponse resp, HttpServletRequest req) {
         Optional<User> user = signInService.signIn(req.getParameter("mail"), req.getParameter("password"));
         if (user.isPresent()) {
-            System.out.println(user.get().getId());
             req.getSession().setAttribute("auth", user.get().getId());
-            System.out.println("good!");
         } else {
             try {
                 System.out.println("cannot find user");

@@ -52,10 +52,9 @@ public class FileServiceImpl implements FileService {
                 .build();
 
         fileInfoRepository.save(file);
-        System.out.println(3);
 
         try {
-            long copy = Files.copy(multipartFile.getInputStream(), Paths.get(storagePath, storageFileName));
+            Files.copy(multipartFile.getInputStream(), Paths.get(storagePath, storageFileName));
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }

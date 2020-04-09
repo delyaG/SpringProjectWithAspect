@@ -11,6 +11,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,7 +66,7 @@ public class UserRepositoryJdbcTemplateImpl implements UserRepository {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection
-                    .prepareStatement(SQL_INSERT);
+                    .prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, entity.getName());
             statement.setString(2, entity.getAuthData().getMail());
             statement.setString(3, entity.getAuthData().getPassword());
@@ -71,8 +74,15 @@ public class UserRepositoryJdbcTemplateImpl implements UserRepository {
             statement.setBoolean(5, entity.isConfirmed());
             return statement;
         }, keyHolder);
-        entity.setId((Long)keyHolder.getKey());
+
+        Object id = keyHolder.getKeyList().get(0).get("id");
+        entity.setId(convertToLong(id));
         return entity;
+    }
+
+    private Long convertToLong(Object o){
+        String stringToConvert = String.valueOf(o);
+        return Long.parseLong(stringToConvert);
     }
 
     @Override
@@ -98,7 +108,7 @@ public class UserRepositoryJdbcTemplateImpl implements UserRepository {
 
     @Override
     public Optional<User> find(Long id) {
-        User user = jdbcTemplate.queryForObject(FIND_BY_MAIL, new Object[]{id}, userRowMapper);
+        User user = jdbcTemplate.queryForObject(FIND_BY_ID, new Object[]{id}, userRowMapper);
         return Optional.ofNullable(user);
     }
 

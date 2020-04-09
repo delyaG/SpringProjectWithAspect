@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import ru.itis.models.FileInfo;
 
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,7 +59,7 @@ public class FileInfoRepositoryJdbcTemplateImpl implements FileInfoRepository {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection
-                    .prepareStatement(SQL_INSERT);
+                    .prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, entity.getOriginalFileName());
             statement.setString(2, entity.getStorageFileName());
             statement.setLong(3, entity.getSize());
@@ -67,9 +68,15 @@ public class FileInfoRepositoryJdbcTemplateImpl implements FileInfoRepository {
             statement.setLong(6, entity.getUserId());
             return statement;
         }, keyHolder);
-        entity.setId((Long) keyHolder.getKey());
-        System.out.println();
+
+        Object id = keyHolder.getKeyList().get(0).get("id");
+        entity.setId(convertToLong(id));
         return entity;
+    }
+
+    private Long convertToLong(Object o){
+        String stringToConvert = String.valueOf(o);
+        return Long.parseLong(stringToConvert);
     }
 
     @Override
